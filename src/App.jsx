@@ -384,35 +384,15 @@ export default function PulseApp() {
     return (
       <div className="p-6 max-w-5xl mx-auto space-y-8">
 
-        {/* Pipeline indicator */}
-        <div className="bg-gray-900 rounded-xl px-5 py-4">
-          <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Layer 1: Real-time execution (voice AI pipeline)</div>
-          <div className="flex items-center gap-2 flex-wrap">
-            {["Caller", "LiveKit · Capture", "Sarvam STT · Speech → Text", "GPT-4.1 · Agent Logic", "Sarvam TTS · Text → Speech", "LiveKit · Playback"].map((node, i, arr) => (
-              <div key={i} className="flex items-center gap-2">
-                <div className={`px-3 py-1.5 rounded-lg text-xs font-medium ${i === 3 ? "bg-indigo-600 text-white" : "bg-gray-700 text-gray-200"}`}>{node}</div>
-                {i < arr.length - 1 && <span className="text-gray-500 text-sm">→</span>}
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 flex items-center gap-2">
-            <div className="flex-1 border-t border-dashed border-gray-600" />
-            <div className="text-xs text-gray-400 px-3 py-1.5 bg-gray-800 rounded-lg">Transcripts & outcomes exhaust</div>
-            <div className="text-gray-500 text-sm">↓</div>
-            <div className="text-xs font-semibold text-pink-400 px-3 py-1.5 bg-gray-800 rounded-lg border border-pink-800">Pulse ingests here</div>
-            <div className="flex-1 border-t border-dashed border-gray-600" />
-          </div>
-        </div>
-
         {/* ── Step 1 ── */}
         <div>
-          <StepBadge number="1" title="Analyze Conversations" subtitle="Pulse processes every completed call. Raw transcripts with metadata, language, outcome, and agent version." />
+          <StepBadge number="1" title="Read the Calls" subtitle="Pulse reads every call the AI made this week and records what was said, which language was used, and whether the customer booked an appointment." />
           <div className="text-xs text-gray-400 mb-4 flex items-center gap-2">
             <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">{WEEK.totalCalls.toLocaleString()} calls this week</span>
             <span>·</span>
-            <span>Showing 5 representative calls</span>
+            <span>Showing 5 real examples</span>
             <span>·</span>
-            <span>Click any call to expand the transcript</span>
+            <span>Click any call to read the full conversation</span>
           </div>
 
           <div className="space-y-3">
@@ -435,7 +415,7 @@ export default function PulseApp() {
                         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${call.outcome === "converted" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>
                           {call.outcome === "converted" ? "✓ Converted" : "✗ Not converted"}
                         </span>
-                        <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{call.agentVersion}</span>
+                        <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">AI {call.agentVersion}</span>
                         <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{call.segment}</span>
                         <span className="text-xs text-gray-400">{call.duration}</span>
                       </div>
@@ -450,10 +430,10 @@ export default function PulseApp() {
                     </div>
                   </button>
 
-                  {/* Transcript */}
+                  {/* Conversation */}
                   {expanded && (
                     <div className="px-5 pb-5 border-t border-gray-100">
-                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mt-4 mb-3">Transcript</div>
+                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mt-4 mb-3">Full conversation</div>
                       <div className="space-y-2">
                         {call.transcript.map((line, i) => (
                           <div key={i} className={`flex gap-3 ${line.s !== "AI" ? "flex-row-reverse" : ""}`}>
@@ -476,20 +456,20 @@ export default function PulseApp() {
 
         {/* ── Step 2 ── */}
         <div>
-          <StepBadge number="2" title="Identify Performance Drivers" subtitle="NLU analysis across all 8,420 calls. Similar phrases clustered across languages. Each cluster correlated with conversion outcomes." />
+          <StepBadge number="2" title="Find What's Driving Performance" subtitle="Pulse reads all 8,420 calls and groups what customers say into patterns — showing which ones are hurting or helping your conversion rate this week." />
 
           <div className="grid grid-cols-3 gap-3 mb-5 text-center">
             <div className="bg-white border border-gray-200 rounded-xl p-4">
               <div className="text-2xl font-bold text-gray-900 mb-1">12</div>
-              <div className="text-xs text-gray-500">Behavioral patterns detected</div>
+              <div className="text-xs text-gray-500">Conversation patterns found</div>
             </div>
             <div className="bg-white border border-gray-200 rounded-xl p-4">
               <div className="text-2xl font-bold text-red-600 mb-1">3</div>
-              <div className="text-xs text-gray-500">Clusters needing action</div>
+              <div className="text-xs text-gray-500">Top problems to fix</div>
             </div>
             <div className="bg-white border border-gray-200 rounded-xl p-4">
               <div className="text-2xl font-bold text-green-600 mb-1">2</div>
-              <div className="text-xs text-gray-500">Winning patterns to lock in</div>
+              <div className="text-xs text-gray-500">Things working well to keep</div>
             </div>
           </div>
 
@@ -501,7 +481,7 @@ export default function PulseApp() {
                 <div className="flex items-stretch">
                   {/* Left: raw phrases */}
                   <div className="flex-1 p-5 min-w-0">
-                    <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Raw phrases detected</div>
+                    <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">What customers actually said</div>
                     <div className="space-y-2">
                       {cluster.rawPhrases.map((p, i) => (
                         <div key={i} className="flex items-center justify-between gap-3">
@@ -525,7 +505,7 @@ export default function PulseApp() {
                     cluster.dir === "up" ? "bg-green-50" : cluster.sev === "critical" ? "bg-red-50" : "bg-gray-50"
                   }`}>
                     <div>
-                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Detected signal</div>
+                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">What this means</div>
                       <div className={`text-base font-semibold mb-1 ${cluster.dir === "up" ? "text-green-800" : "text-gray-900"}`}>{cluster.name}</div>
                       <div className="flex items-center gap-3 mb-3">
                         <span className={`text-lg font-bold ${cluster.dir === "up" ? "text-green-600" : "text-red-600"}`}>{cluster.rate}%</span>
@@ -553,7 +533,7 @@ export default function PulseApp() {
               <span className="text-white text-xs font-bold">3</span>
             </div>
             <div className="text-sm text-gray-600">
-              These 5 clusters are now ranked by conversion impact in the{" "}
+              These 5 patterns are now ranked by how much they affect your conversion in the{" "}
               <button onClick={() => setView("matrix")} className="text-pink-600 font-semibold hover:underline">
                 Performance Matrix →
               </button>
